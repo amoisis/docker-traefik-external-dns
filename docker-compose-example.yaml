@@ -1,0 +1,44 @@
+  external-dns-unifi:
+    container_name: external-dns-unifi
+    image: ghcr.io/kashalls/external-dns-unifi-webhook:main
+    environment:
+      UNIFI_HOST: "https://192.168.1.1"
+      UNIFI_EXTERNAL_CONTROLLER: "false"
+      UNIFI_API_KEY: "${UNIFI_API_KEY}"
+      LOG_LEVEL: "debug"
+      SERVER_HOST: "0.0.0.0" # important: listen on all interfaces
+    expose:
+      - "8888" # available to other containers
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  traefik-webhook:
+    container_name: traefik-webhook
+    image: amoisis/docker-traefik-external-dns:latest
+    environment:
+      TRAEFIK_API: "http://traefik:8080/api/http/routers"
+      TRAEFIK_HOSTNAME: "traefik"
+      WEBHOOK: "http://external-dns-unifi:8888/records"
+      REFRESH_INTERVAL: "30"
+      LOG_LEVEL: "INFO"
+      CACHE_FILE: "/data/last_endpoints.json"
+      ALLOWED_DOMAINS: "*.example.com"
+      IGNORED_DOMAINS: "traefik.example.com,desktop.example.com"
+      DEFAULT_TTL: "Auto"
+      MAX_RETRIES: 5
+      BACKOFF_FACTOR: 2
+    volumes:
+      - ./dns-data:/data
+    ports:
+      - "8888:8888"   # for /records and /healthz debug endpoints
+    depends_on:
+      - traefik
+      - external-dns-unifi
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8888/healthz')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
