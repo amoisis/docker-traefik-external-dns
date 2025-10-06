@@ -1,4 +1,6 @@
 [![Docker](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/docker-publish.yml)
+[![Dependabot Updates](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/dependabot/dependabot-updates/badge.svg)](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/dependabot/dependabot-updates)
+[![CodeQL](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/amoisis/docker-traefik-external-dns/actions/workflows/github-code-scanning/codeql)
 
 # DNS Automation with Traefik
 
