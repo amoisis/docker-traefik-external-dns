@@ -14,7 +14,7 @@ ALLOWED_DOMAINS = [d.strip() for d in os.getenv("ALLOWED_DOMAINS", "").split(","
 IGNORED_DOMAINS = [d.strip() for d in os.getenv("IGNORED_DOMAINS", "").split(",") if d.strip()]
 DEFAULT_TTL = os.getenv("DEFAULT_TTL", "Auto")  # can be "Auto" or an integer
 MAX_RETRIES = os.getenv("MAX_RETRIES", "5")
-BACKOFF_FACTOR = os.getenv("BACKOFF_FACTOR", "2")  # exponential backoff: 1s, 2s, 4s, 8s, 16s
+BACKOFF_FACTOR = int(os.getenv("BACKOFF_FACTOR", "2"))  # exponential backoff: 1s, 2s, 4s, 8s, 16s
 
 app = Flask(__name__)
 
@@ -87,7 +87,7 @@ def push_to_unifi(create, update_old, update_new, delete):
     headers = {
         "Content-Type": "application/external.dns.webhook+json;version=1"
     }
-    for attempt in range(1, MAX_RETRIES + 1):
+    for attempt in range(1, int(MAX_RETRIES) + 1):
         try:
             r = requests.post(WEBHOOK, headers=headers, json=payload, timeout=10)
             r.raise_for_status()
