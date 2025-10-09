@@ -131,6 +131,7 @@ def refresh_loop():
             if c or uo or d:
                 push_to_unifi(c, uo, un, d)
                 save_cache(new_endpoints)
+                last_endpoints = new_endpoints  # Update in-memory state
             else:
                 app.logger.debug("No DNS changes detected")
         except Exception as e:
