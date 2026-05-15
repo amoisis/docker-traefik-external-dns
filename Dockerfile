@@ -1,4 +1,4 @@
-FROM python:3.14.3-slim
+FROM python:3.14.5-slim
 WORKDIR /app
 COPY ./src .
 RUN pip install -r requirements.txt
